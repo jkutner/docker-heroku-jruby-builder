@@ -37,7 +37,7 @@ major=$1
 minor=$2
 patch=$3
 
-mvn -Djruby.default.ruby.version=$major.$minor -T4
+mvn -Djruby.default.ruby.version=$major.$minor -Dmaven.repo.local=$cache_dir/.m2/repository -T4
 rm bin/*.bat
 rm bin/*.dll
 rm bin/*.exe
