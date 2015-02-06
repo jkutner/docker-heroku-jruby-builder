@@ -19,7 +19,7 @@ if [ $GIT_URL ]; then
 else
 	if [ ! -f $jruby_src_file ]; then
 		echo "Downloading $jruby_src_file"
-		curl -s -O "http://jruby.org.s3.amazonaws.com/downloads/$VERSION/$jruby_src_file"
+		curl -s -O -L "https://s3.amazonaws.com/jruby.org/downloads/$VERSION/$jruby_src_file"
 	fi
 fi
 
