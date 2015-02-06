@@ -1,14 +1,23 @@
 desc "Generate new jruby shell scripts"
 task :new, [:version, :stack] do |t, args|
-  ["1.8.7", "1.9.3", "2.0.0"].each do |ruby_version|
-    file = "rubies/ruby-#{ruby_version}-jruby-#{args[:version]}.sh"
+  write_file = Proc.new do |ruby_version, jruby_version|
+    file = "rubies/ruby-#{ruby_version}-jruby-#{jruby_version}.sh"
     puts "Writing #{file}"
     File.open(file, 'w') do |file|
       file.puts <<FILE
 #!/bin/sh
 
-docker run -v `pwd`/builds:/tmp/output -v `pwd`/../cache:/tmp/cache -e VERSION=#{args[:version]} -e RUBY_VERSION=#{ruby_version} -t hone/jruby-builder:#{args[:stack]}
+docker run -v `pwd`/builds:/tmp/output -v `pwd`/../cache:/tmp/cache -e VERSION=#{jruby_version} -e RUBY_VERSION=#{ruby_version} -t hone/jruby-builder:#{args[:stack]}
 FILE
+    end
+  end
+
+  # JRuby 9000
+  if Gem::Version.new(args[:version]) > Gem::Version.new("1.8.0")
+    write_file.call("2.2.0", args[:version])
+  else
+    ["1.8.7", "1.9.3", "2.0.0"].each do |ruby_version|
+      write_file.call(ruby_version, args[:version])
     end
   end
 end
